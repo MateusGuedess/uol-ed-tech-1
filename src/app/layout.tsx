@@ -1,6 +1,7 @@
 "use client";
 import PrivateRoute from "@/components/PrivateRoute";
 import { usePrivateRoute } from "@/hooks/usePrivateRoute";
+import Providers from "@/utils/provider";
 import { Source_Code_Pro } from "next/font/google";
 import { usePathname } from "next/navigation";
 import "./globals.css";
@@ -21,9 +22,11 @@ export default function RootLayout({
       <body className={`${sourceCodePro.className} `}>
         {!pathIsProtected && children}
         {pathIsProtected && (
-          <PrivateRoute>
-            <LayoutProvider>{children}</LayoutProvider>
-          </PrivateRoute>
+          <Providers>
+            <PrivateRoute>
+              <LayoutProvider>{children}</LayoutProvider>
+            </PrivateRoute>
+          </Providers>
         )}
       </body>
     </html>

@@ -13,9 +13,6 @@ function LayoutProvider({ children }: ILayoutProvider) {
     <>
       {pathname != "/auth/signin" && pathname != "/auth/signup" && <Header />}
       {children}
-      {pathname != "/auth/signin" && pathname != "/auth/signup" && (
-        <h1>Footer</h1>
-      )}
     </>
   );
 }

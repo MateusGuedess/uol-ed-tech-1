@@ -1,5 +1,7 @@
 "use client";
+import { History } from "@/components";
 import PrivateRoute from "@/components/PrivateRoute";
+import HistoryProvider from "@/context/historyContext";
 import { usePrivateRoute } from "@/hooks/usePrivateRoute";
 import Providers from "@/utils/provider";
 import { Source_Code_Pro } from "next/font/google";
@@ -24,7 +26,35 @@ export default function RootLayout({
         {pathIsProtected && (
           <Providers>
             <PrivateRoute>
-              <LayoutProvider>{children}</LayoutProvider>
+              <HistoryProvider>
+                <LayoutProvider>
+                  <div className="flex">
+                    {children}
+                    <History.Root className="w-[300px] mx-5">
+                      <History.Title title="Atividades" />
+                      <History.Content
+                        action="Foto Atualizada"
+                        photo=""
+                        title=""
+                        date=""
+                      />
+                      <History.Content
+                        action="Nome Atualizado"
+                        photo=""
+                        title=""
+                        date=""
+                      />
+                      <History.Content
+                        action="Comentário"
+                        photo=""
+                        title=""
+                        comment="teste teste teste"
+                        date=""
+                      />
+                    </History.Root>
+                  </div>
+                </LayoutProvider>
+              </HistoryProvider>
             </PrivateRoute>
           </Providers>
         )}

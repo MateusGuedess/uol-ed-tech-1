@@ -4,7 +4,7 @@ interface HistoryTitleProps {
 
 function HistoryTitle({ title }: HistoryTitleProps) {
   return (
-    <div className="">
+    <div className="h-[35px] my-4">
       <p className="text-[25px]">{title}</p>
     </div>
   );

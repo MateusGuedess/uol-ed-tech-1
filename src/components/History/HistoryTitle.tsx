@@ -3,7 +3,11 @@ interface HistoryTitleProps {
 }
 
 function HistoryTitle({ title }: HistoryTitleProps) {
-  return <div>{title}</div>;
+  return (
+    <div className="">
+      <p className="text-[25px]">{title}</p>
+    </div>
+  );
 }
 
 export default HistoryTitle;

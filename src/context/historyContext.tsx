@@ -7,7 +7,7 @@ import {
 } from "react";
 
 interface IHistoryContext {
-  id: string;
+  id?: string;
   action: string;
   comment?: string;
 }
@@ -17,7 +17,7 @@ interface History {
   setHistory: Dispatch<SetStateAction<IHistoryContext[]>>;
 }
 
-const HistoryContext = createContext({} as History);
+export const HistoryContext = createContext({} as History);
 
 function HistoryProvider({ children }: PropsWithChildren) {
   const [history, setHistory] = useState<IHistoryContext[]>([]);

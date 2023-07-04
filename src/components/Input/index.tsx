@@ -28,7 +28,7 @@ function Input({
       onChange={onChange}
       name={name}
       id={id}
-      className={`${className} h-[35px] rounded-lg`}
+      className={`${className} h-[35px] rounded-lg px-[5px]`}
     />
   );
 }

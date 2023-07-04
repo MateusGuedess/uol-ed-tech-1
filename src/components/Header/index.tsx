@@ -6,14 +6,14 @@ function Header() {
   return (
     <header className="flex items-center h-[50px] bg-gradient-to-l  from-indigo-500 to-white">
       <nav className="flex items-center justify-between w-[92%] mx-auto">
-        <div>
+        <Link href="/">
           <Image
             width={25}
             height={25}
             src={"/coffe-cup.png"}
             alt="Coffe Cup"
           />
-        </div>
+        </Link>
         <div className="">
           <ul>
             <li>

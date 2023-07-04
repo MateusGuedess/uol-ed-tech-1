@@ -1,12 +1,13 @@
 "use client";
 import { History } from "@/components";
 import PrivateRoute from "@/components/PrivateRoute";
-import HistoryProvider from "@/context/historyContext";
+import HistoryProvider, { HistoryContext } from "@/context/historyContext";
 import UsersProvider from "@/context/usersContexts";
 import { usePrivateRoute } from "@/hooks/usePrivateRoute";
 import Providers from "@/utils/provider";
 import { Source_Code_Pro } from "next/font/google";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
 import "./globals.css";
 import LayoutProvider from "./layoutProvider";
 
@@ -19,6 +20,8 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
   const pathIsProtected = usePrivateRoute(pathname);
+
+  const { history } = useContext(HistoryContext);
 
   return (
     <html lang="en">
@@ -34,25 +37,21 @@ export default function RootLayout({
                       {children}
                       <History.Root className="w-[300px] mx-5">
                         <History.Title title="Atividades" />
-                        <History.Content
-                          action="Foto Atualizada"
-                          photo=""
-                          title=""
-                          date=""
-                        />
-                        <History.Content
-                          action="Nome Atualizado"
-                          photo=""
-                          title=""
-                          date=""
-                        />
-                        <History.Content
-                          action="Comentário"
-                          photo=""
-                          title=""
-                          comment="teste teste teste"
-                          date=""
-                        />
+                        {console.log("history na pg: ", history)}
+                        {history?.map((item) => (
+                          <>
+                            <History.Content
+                              key={item?.id}
+                              action={item?.action}
+                              photo=""
+                              title=""
+                              date="27/07"
+                              comment={item?.comment ?? item?.comment}
+                            />
+                            s
+                          </>
+                        ))}
+                        s
                       </History.Root>
                     </div>
                   </LayoutProvider>

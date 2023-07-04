@@ -5,10 +5,11 @@ import { Button, Input } from "@/components";
 import { HistoryContext } from "@/context/historyContext";
 import { UsersContext } from "@/context/usersContexts";
 import { Collaborator } from "@/types/Collaborator";
+// import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useContext, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 async function getUserComments(id: string) {
   const res = await fetch(
@@ -66,21 +67,24 @@ function User() {
     queryFn: () => getUserComments(id),
   });
 
-  const { data: commentData, refetch: RefetchComment } = useQuery({
-    queryKey: ["postComment"],
-    queryFn: () => postComment(id, comment),
-    enabled: false,
-    onSuccess: () =>
-      setHistory((prevState) => [
-        ...prevState,
-        {
-          id: id,
-          action: "Comment",
-          comment: comment,
-        },
-      ]),
-  });
+  const { mutate: createComment } = useMutation(
+    ({ id, comment }: { id: string; comment: string }) =>
+      postComment(id, comment),
+    {
+      onSuccess: () =>
+        setHistory((prevState) => [
+          ...prevState,
+          {
+            id: id,
+            action: "Comment",
+            comment: comment,
+          },
+        ]),
+    }
+  );
+
   const [user] = users.filter((item) => item?.id == Number(id));
+
   const [form, setForm] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
@@ -89,19 +93,21 @@ function User() {
     cpf: user?.cpf ?? "",
   });
 
-  const { data: dataUser, refetch: putUser } = useQuery({
-    queryKey: ["updateUser"],
-    queryFn: () => addOrUpdateUser(id, form),
-    enabled: false,
-    onSuccess: () =>
-      setHistory((prevState) => [
-        ...prevState,
-        {
-          id: id,
-          action: id != "create" ? "Update user" : "New user added",
-        },
-      ]),
-  });
+  const { mutate: createOrUpdateUser } = useMutation(
+    ({ id, form }: { id: string; form: object }) => addOrUpdateUser(id, form),
+    {
+      onSuccess: () => {
+        refetch();
+        setHistory((prevState) => [
+          ...prevState,
+          {
+            id: id,
+            action: id != "create" ? "Update user" : "New user added",
+          },
+        ]);
+      },
+    }
+  );
 
   const { name, email, admission_date, job_title, cpf } = form;
 
@@ -114,13 +120,13 @@ function User() {
       },
     ]);
 
-    RefetchComment();
+    createComment({ id, comment });
   }
 
   function handleSubmit(e: any) {
     e.preventDefault();
 
-    putUser();
+    createOrUpdateUser({ id, form });
   }
 
   return (

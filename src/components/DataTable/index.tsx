@@ -10,7 +10,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import * as React from "react";
 
 import baseUrl from "@/api";
 
@@ -22,9 +21,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { HistoryContext } from "@/context/historyContext";
+import { UsersContext } from "@/context/usersContexts";
 import { Collaborator } from "@/types/Collaborator";
 import { ArrowLeft, ArrowRight, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useContext, useState } from "react";
+import { useMutation } from "react-query";
 import { columns } from "./columnsConfig";
 
 interface IDataTable {
@@ -33,18 +36,38 @@ interface IDataTable {
 
 async function deleteUser(id: string) {
   const res = await baseUrl(
-    `https://qr-challenge.herokuapp.com/api/v1/users/${id}`
+    `https://qr-challenge.herokuapp.com/api/v1/users/${id}`,
+    {
+      method: "DELETE",
+    }
   );
   const comment = await res.data;
   return comment;
 }
 
 export function DataTable({ data }: IDataTable) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const { setHistory } = useContext(HistoryContext);
+  const { refetch } = useContext(UsersContext);
+
+  const { mutate: deletecollaborator } = useMutation(
+    (id: string) => deleteUser(id),
+    {
+      onSuccess: ({ user }) => {
+        refetch();
+        setHistory((prevState) => [
+          ...prevState,
+          {
+            id: user?.id,
+            action: "Delete User",
+          },
+        ]);
+      },
+    }
+  );
 
   const table = useReactTable({
     data,
@@ -117,9 +140,14 @@ export function DataTable({ data }: IDataTable) {
                     </TableCell>
                   ))}
                   <TableCell>
-                    {" "}
                     <div className="flex text-left font-medium">
-                      <Trash2 size={16} />
+                      <Trash2
+                        size={16}
+                        className="hover:cursor-pointer mr-[15px]"
+                        onClick={() =>
+                          deletecollaborator(row?.original?.id.toString())
+                        }
+                      />
                       <Link href={`user/${row?.original?.id}`}>
                         <Edit size={16} />
                       </Link>

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface HistoryContentProps {
-  action: "Foto Atualizada" | "Nome Atualizado" | "Comentário";
+  action: string;
   comment?: string;
   photo: string;
   title: string;

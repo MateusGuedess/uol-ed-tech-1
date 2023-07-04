@@ -22,6 +22,8 @@ export const HistoryContext = createContext({} as History);
 function HistoryProvider({ children }: PropsWithChildren) {
   const [history, setHistory] = useState<IHistoryContext[]>([]);
 
+  console.log("history", history);
+
   return (
     <HistoryContext.Provider value={{ history, setHistory }}>
       {children}

@@ -6,7 +6,7 @@ function Providers({ children }: PropsWithChildren) {
     new QueryClient({ defaultOptions: { queries: { staleTime: 5000 } } })
   );
   return (
-    <QueryClientProvider client={client}>
+    <QueryClientProvider client={client} contextSharing={true}>
       {children}
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>

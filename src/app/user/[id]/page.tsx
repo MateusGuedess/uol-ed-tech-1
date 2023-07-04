@@ -5,7 +5,6 @@ import { Button, Input } from "@/components";
 import { HistoryContext } from "@/context/historyContext";
 import { UsersContext } from "@/context/usersContexts";
 import { Collaborator } from "@/types/Collaborator";
-// import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useContext, useState } from "react";
@@ -126,7 +125,7 @@ function User() {
           ...prevState,
           {
             id: user?.id,
-            action: id != "create" ? "Update user" : "New user added",
+            action: "Update user",
           },
         ]);
       },

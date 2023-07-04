@@ -36,7 +36,7 @@ async function postComment(id: string, value: string) {
   return comment;
 }
 
-async function addOrUpdateUser(
+async function update(
   id: string,
   { name, email, job_title, admission_date, photo_url }: Partial<Collaborator>
 ) {
@@ -44,6 +44,30 @@ async function addOrUpdateUser(
     `https://qr-challenge.herokuapp.com/api/v1/users/${id}`,
     {
       method: "PUT",
+      data: {
+        name: name,
+        email: email,
+        job_title: job_title,
+        admission_date: admission_date,
+        photo_url: photo_url,
+      },
+    }
+  );
+  const comment = await res.data;
+  return comment;
+}
+
+async function create({
+  name,
+  email,
+  job_title,
+  admission_date,
+  photo_url,
+}: Partial<Collaborator>) {
+  const res = await baseUrl(
+    `https://qr-challenge.herokuapp.com/api/v1/users/`,
+    {
+      method: "POST",
       data: {
         name: name,
         email: email,
@@ -93,21 +117,34 @@ function User() {
     cpf: user?.cpf ?? "",
   });
 
-  const { mutate: createOrUpdateUser } = useMutation(
-    ({ id, form }: { id: string; form: object }) => addOrUpdateUser(id, form),
+  const { mutate: updateUser } = useMutation(
+    ({ id, form }: { id: string; form: object }) => update(id, form),
     {
-      onSuccess: () => {
+      onSuccess: ({ user }) => {
         refetch();
         setHistory((prevState) => [
           ...prevState,
           {
-            id: id,
+            id: user?.id,
             action: id != "create" ? "Update user" : "New user added",
           },
         ]);
       },
     }
   );
+
+  const { mutate: createUser } = useMutation((form: object) => create(form), {
+    onSuccess: ({ user }) => {
+      refetch();
+      setHistory((prevState) => [
+        ...prevState,
+        {
+          id: user?.id,
+          action: "New user added",
+        },
+      ]);
+    },
+  });
 
   const { name, email, admission_date, job_title, cpf } = form;
 
@@ -126,7 +163,10 @@ function User() {
   function handleSubmit(e: any) {
     e.preventDefault();
 
-    createOrUpdateUser({ id, form });
+    if (id != "create") {
+      return updateUser({ id, form });
+    }
+    return createUser(form);
   }
 
   return (

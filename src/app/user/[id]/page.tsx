@@ -6,7 +6,7 @@ import { HistoryContext } from "@/context/historyContext";
 import { UsersContext } from "@/context/usersContexts";
 import { Collaborator } from "@/types/Collaborator";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { ChangeEvent, useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 
@@ -129,6 +129,7 @@ function User() {
             action: "Update user",
           },
         ]);
+        redirect("/");
       },
     }
   );
@@ -143,6 +144,7 @@ function User() {
           action: "New user added",
         },
       ]);
+      redirect("/");
     },
   });
 
@@ -163,7 +165,7 @@ function User() {
   function handleSubmit(e: any) {
     e.preventDefault();
 
-    if (id != "create") {
+    if (id !== "new") {
       return updateUser({ id, form });
     }
     return createUser(form);
@@ -174,7 +176,6 @@ function User() {
     if (e.target.files) {
       reader.readAsDataURL(e.target.files[0]);
       reader.onload = () => {
-        console.log(reader.result);
         setForm((prevState) => ({
           ...prevState,
           photo_url: reader.result,
@@ -286,10 +287,10 @@ function User() {
               type="submit"
               className="self-start mt-[15px] flex items-center justify-center w-[150px] h-[35px]  bg-[#a29bfe] rounded-2xl text-[#fff] font-bold cursor-pointer"
             >
-              {id !== "create" ? "Update" : "Create"}
+              {id !== "new" ? "Update" : "Create"}
             </Button>
           </form>
-          {id !== "create" && (
+          {id !== "new" && (
             <>
               <div className="flex mt-[20px] flex-col">
                 <textarea

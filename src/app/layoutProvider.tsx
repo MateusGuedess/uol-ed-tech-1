@@ -30,7 +30,6 @@ function LayoutProvider({ children }: ILayoutProvider) {
                 date="27/07"
                 comment={item?.comment ?? item?.comment}
               />
-              s
             </>
           ))}
         </History.Root>

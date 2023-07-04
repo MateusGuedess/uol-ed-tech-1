@@ -1,13 +1,14 @@
 import { ChangeEvent } from "react";
 
 interface InputProps {
-  type: "text" | "number" | "email" | "password";
+  type: "text" | "number" | "email" | "password" | "file";
   value: string | number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   name: string;
   id: string;
   className: string;
   placeholder: string;
+  accept?: string;
 }
 
 function Input({
@@ -18,6 +19,7 @@ function Input({
   id = "",
   className = "",
   placeholder = "",
+  accept,
 }: Partial<InputProps>) {
   return (
     <input
@@ -29,6 +31,7 @@ function Input({
       name={name}
       id={id}
       className={`${className} h-[35px] rounded-lg px-[5px]`}
+      accept={accept}
     />
   );
 }

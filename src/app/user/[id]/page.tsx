@@ -7,7 +7,7 @@ import { UsersContext } from "@/context/usersContexts";
 import { Collaborator } from "@/types/Collaborator";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useContext, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 
 async function getUserComments(id: string) {
@@ -114,6 +114,7 @@ function User() {
     admission_date: user?.admission_date ?? "",
     job_title: user?.job_title ?? "",
     cpf: user?.cpf ?? "",
+    photo_url: user?.photo_url ?? "",
   });
 
   const { mutate: updateUser } = useMutation(
@@ -145,7 +146,7 @@ function User() {
     },
   });
 
-  const { name, email, admission_date, job_title, cpf } = form;
+  const { name, email, admission_date, job_title, cpf, photo_url } = form;
 
   function handleComment() {
     setHistory((prevState) => [
@@ -168,13 +169,27 @@ function User() {
     return createUser(form);
   }
 
+  function handleUpload(e: ChangeEvent<HTMLInputElement>) {
+    const reader = new FileReader();
+    if (e.target.files) {
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = () => {
+        console.log(reader.result);
+        setForm((prevState) => ({
+          ...prevState,
+          photo_url: reader.result,
+        }));
+      };
+    }
+  }
+
   return (
     <div className="w-full h-full mx-[20px] mt-[45px] flex flex-col">
       <div className="flex">
         <div className="flex-none w-[100px] h-[100px] relative">
           <Image
             className="rounded-3xl"
-            src={user?.photo_url ?? "/profile.jpeg"}
+            src={photo_url}
             fill={true}
             alt="#"
             sizes="100%"
@@ -183,6 +198,21 @@ function User() {
         </div>
         <div className="flex w-[300px] flex-col flex-1 mx-[30px]">
           <form onSubmit={handleSubmit} className="flex w-full flex-col">
+            <label
+              htmlFor="avatar"
+              className="self-start mt-[15px] flex items-center justify-center w-[150px] h-[35px]  bg-[#a29bfe] rounded-2xl text-[#fff] font-bold cursor-pointer"
+            >
+              Picture
+            </label>
+            <Input
+              type="file"
+              id="avatar"
+              name="avatar"
+              accept="image/png, image/jpeg"
+              onChange={handleUpload}
+              className="hidden"
+            />
+
             <label className="mt-[15px]" htmlFor="name">
               Name:
             </label>

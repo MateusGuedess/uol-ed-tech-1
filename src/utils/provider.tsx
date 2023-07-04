@@ -8,7 +8,6 @@ function Providers({ children }: PropsWithChildren) {
   return (
     <QueryClientProvider client={client} contextSharing={true}>
       {children}
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }
